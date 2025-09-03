@@ -4,31 +4,29 @@ import type React from "react"
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { GamePlayer } from "@/components/game-player"
 import { DeviceCompatibility } from "@/components/device-compatibility"
 import { InstallationGuide } from "@/components/installation-guide"
 import { CloudServerStatus } from "@/components/cloud-server-status"
 import {
+  Search,
   Gamepad2,
   Monitor,
-  Play,
   Settings,
-  Users,
-  Star,
-  Search,
-  Grid3X3,
-  List,
+  User,
   LogOut,
-  Crown,
-  Trophy,
-  Zap,
-  Shield,
+  Play,
+  Star,
+  Download,
+  Wifi,
+  Bluetooth,
+  Usb,
 } from "lucide-react"
 
 // Dados dos jogos organizados por console
@@ -40,8 +38,8 @@ const featuredGames = [
     console: "SNES",
     genre: "Plataforma",
     rating: 4.9,
-    players: "1-2",
-    image: "/placeholder.svg?height=200&width=300&text=Super+Mario+World",
+    image: "/placeholder-5gd0m.png",
+    rom: "snes/super-mario-world.smc",
   },
   {
     id: 2,
@@ -49,17 +47,17 @@ const featuredGames = [
     console: "SNES",
     genre: "Aventura",
     rating: 4.8,
-    players: "1",
-    image: "/placeholder.svg?height=200&width=300&text=Zelda+ALTTP",
+    image: "/placeholder-zmsj6.png",
+    rom: "snes/zelda-alttp.smc",
   },
   {
     id: 3,
     title: "Super Metroid",
     console: "SNES",
-    genre: "Ação",
+    genre: "Aventura",
     rating: 4.9,
-    players: "1",
-    image: "/placeholder.svg?height=200&width=300&text=Super+Metroid",
+    image: "/placeholder-beiws.png",
+    rom: "snes/super-metroid.smc",
   },
   {
     id: 4,
@@ -67,8 +65,8 @@ const featuredGames = [
     console: "SNES",
     genre: "RPG",
     rating: 4.9,
-    players: "1",
-    image: "/placeholder.svg?height=200&width=300&text=Chrono+Trigger",
+    image: "/placeholder-2buyo.png",
+    rom: "snes/chrono-trigger.smc",
   },
   {
     id: 5,
@@ -76,8 +74,8 @@ const featuredGames = [
     console: "SNES",
     genre: "RPG",
     rating: 4.8,
-    players: "1",
-    image: "/placeholder.svg?height=200&width=300&text=Final+Fantasy+VI",
+    image: "/placeholder-mou3w.png",
+    rom: "snes/ff6.smc",
   },
   {
     id: 6,
@@ -85,17 +83,17 @@ const featuredGames = [
     console: "SNES",
     genre: "Plataforma",
     rating: 4.7,
-    players: "1-2",
-    image: "/placeholder.svg?height=200&width=300&text=Donkey+Kong+Country",
+    image: "/placeholder-4s062.png",
+    rom: "snes/dkc.smc",
   },
   {
     id: 7,
-    title: "Street Fighter II",
+    title: "Street Fighter II Turbo",
     console: "SNES",
     genre: "Luta",
     rating: 4.6,
-    players: "1-2",
-    image: "/placeholder.svg?height=200&width=300&text=Street+Fighter+II",
+    image: "/placeholder-ipr07.png",
+    rom: "snes/sf2-turbo.smc",
   },
   {
     id: 8,
@@ -103,8 +101,8 @@ const featuredGames = [
     console: "SNES",
     genre: "Corrida",
     rating: 4.5,
-    players: "1-2",
-    image: "/placeholder.svg?height=200&width=300&text=Super+Mario+Kart",
+    image: "/placeholder-a1d14.png",
+    rom: "snes/mario-kart.smc",
   },
 
   // N64 Games
@@ -114,8 +112,8 @@ const featuredGames = [
     console: "N64",
     genre: "Plataforma",
     rating: 4.9,
-    players: "1",
-    image: "/placeholder.svg?height=200&width=300&text=Super+Mario+64",
+    image: "/placeholder-ca4mp.png",
+    rom: "n64/mario64.z64",
   },
   {
     id: 10,
@@ -123,8 +121,8 @@ const featuredGames = [
     console: "N64",
     genre: "Aventura",
     rating: 4.9,
-    players: "1",
-    image: "/placeholder.svg?height=200&width=300&text=Zelda+OOT",
+    image: "/placeholder-c1jg9.png",
+    rom: "n64/zelda-oot.z64",
   },
   {
     id: 11,
@@ -132,26 +130,26 @@ const featuredGames = [
     console: "N64",
     genre: "FPS",
     rating: 4.7,
-    players: "1-4",
-    image: "/placeholder.svg?height=200&width=300&text=GoldenEye+007",
+    image: "/placeholder-a98pj.png",
+    rom: "n64/goldeneye.z64",
   },
   {
     id: 12,
     title: "Super Smash Bros.",
     console: "N64",
     genre: "Luta",
-    rating: 4.6,
-    players: "1-4",
-    image: "/placeholder.svg?height=200&width=300&text=Super+Smash+Bros",
+    rating: 4.8,
+    image: "/placeholder-54e5h.png",
+    rom: "n64/smash-bros.z64",
   },
   {
     id: 13,
     title: "Mario Kart 64",
     console: "N64",
     genre: "Corrida",
-    rating: 4.7,
-    players: "1-4",
-    image: "/placeholder.svg?height=200&width=300&text=Mario+Kart+64",
+    rating: 4.6,
+    image: "/placeholder-2l20m.png",
+    rom: "n64/mario-kart-64.z64",
   },
   {
     id: 14,
@@ -159,8 +157,8 @@ const featuredGames = [
     console: "N64",
     genre: "Party",
     rating: 4.5,
-    players: "1-4",
-    image: "/placeholder.svg?height=200&width=300&text=Mario+Party",
+    image: "/placeholder-s3bz0.png",
+    rom: "n64/mario-party.z64",
   },
 
   // PlayStation 1 Games
@@ -170,8 +168,8 @@ const featuredGames = [
     console: "PS1",
     genre: "RPG",
     rating: 4.9,
-    players: "1",
-    image: "/placeholder.svg?height=200&width=300&text=Final+Fantasy+VII",
+    image: "/final-fantasy-vii-ps1-cover.png",
+    rom: "ps1/ff7.bin",
   },
   {
     id: 16,
@@ -179,8 +177,8 @@ const featuredGames = [
     console: "PS1",
     genre: "Ação",
     rating: 4.8,
-    players: "1",
-    image: "/placeholder.svg?height=200&width=300&text=Metal+Gear+Solid",
+    image: "/placeholder-y41te.png",
+    rom: "ps1/mgs.bin",
   },
   {
     id: 17,
@@ -188,8 +186,8 @@ const featuredGames = [
     console: "PS1",
     genre: "Terror",
     rating: 4.7,
-    players: "1",
-    image: "/placeholder.svg?height=200&width=300&text=Resident+Evil+2",
+    image: "/placeholder.svg?height=200&width=300",
+    rom: "ps1/re2.bin",
   },
   {
     id: 18,
@@ -197,8 +195,8 @@ const featuredGames = [
     console: "PS1",
     genre: "Plataforma",
     rating: 4.6,
-    players: "1",
-    image: "/placeholder.svg?height=200&width=300&text=Crash+Bandicoot+3",
+    image: "/placeholder.svg?height=200&width=300",
+    rom: "ps1/crash3.bin",
   },
   {
     id: 19,
@@ -206,8 +204,8 @@ const featuredGames = [
     console: "PS1",
     genre: "Corrida",
     rating: 4.5,
-    players: "1-2",
-    image: "/placeholder.svg?height=200&width=300&text=Gran+Turismo+2",
+    image: "/placeholder.svg?height=200&width=300",
+    rom: "ps1/gt2.bin",
   },
   {
     id: 20,
@@ -215,8 +213,8 @@ const featuredGames = [
     console: "PS1",
     genre: "Luta",
     rating: 4.7,
-    players: "1-2",
-    image: "/placeholder.svg?height=200&width=300&text=Tekken+3",
+    image: "/placeholder.svg?height=200&width=300",
+    rom: "ps1/tekken3.bin",
   },
 
   // PlayStation 2 Games
@@ -226,8 +224,8 @@ const featuredGames = [
     console: "PS2",
     genre: "Ação",
     rating: 4.8,
-    players: "1",
-    image: "/placeholder.svg?height=200&width=300&text=GTA+San+Andreas",
+    image: "/placeholder.svg?height=200&width=300",
+    rom: "ps2/gta-sa.iso",
   },
   {
     id: 22,
@@ -235,26 +233,26 @@ const featuredGames = [
     console: "PS2",
     genre: "Ação",
     rating: 4.7,
-    players: "1",
-    image: "/placeholder.svg?height=200&width=300&text=God+of+War",
+    image: "/placeholder.svg?height=200&width=300",
+    rom: "ps2/god-of-war.iso",
   },
   {
     id: 23,
     title: "Shadow of the Colossus",
     console: "PS2",
     genre: "Aventura",
-    rating: 4.8,
-    players: "1",
-    image: "/placeholder.svg?height=200&width=300&text=Shadow+Colossus",
+    rating: 4.9,
+    image: "/placeholder.svg?height=200&width=300",
+    rom: "ps2/sotc.iso",
   },
   {
     id: 24,
     title: "Final Fantasy X",
     console: "PS2",
     genre: "RPG",
-    rating: 4.7,
-    players: "1",
-    image: "/placeholder.svg?height=200&width=300&text=Final+Fantasy+X",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300",
+    rom: "ps2/ffx.iso",
   },
   {
     id: 25,
@@ -262,8 +260,8 @@ const featuredGames = [
     console: "PS2",
     genre: "Música",
     rating: 4.6,
-    players: "1-2",
-    image: "/placeholder.svg?height=200&width=300&text=Guitar+Hero+II",
+    image: "/placeholder.svg?height=200&width=300",
+    rom: "ps2/gh2.iso",
   },
 
   // Xbox 360 Games
@@ -273,53 +271,53 @@ const featuredGames = [
     console: "Xbox 360",
     genre: "FPS",
     rating: 4.8,
-    players: "1-4",
-    image: "/placeholder.svg?height=200&width=300&text=Halo+3",
+    image: "/placeholder.svg?height=200&width=300",
+    rom: "xbox360/halo3.iso",
   },
   {
     id: 27,
     title: "Gears of War",
     console: "Xbox 360",
-    genre: "TPS",
+    genre: "Ação",
     rating: 4.7,
-    players: "1-2",
-    image: "/placeholder.svg?height=200&width=300&text=Gears+of+War",
+    image: "/placeholder.svg?height=200&width=300",
+    rom: "xbox360/gow.iso",
   },
   {
     id: 28,
-    title: "Mass Effect",
-    console: "Xbox 360",
-    genre: "RPG",
-    rating: 4.6,
-    players: "1",
-    image: "/placeholder.svg?height=200&width=300&text=Mass+Effect",
-  },
-  {
-    id: 29,
     title: "Forza Motorsport 3",
     console: "Xbox 360",
     genre: "Corrida",
-    rating: 4.5,
-    players: "1-8",
-    image: "/placeholder.svg?height=200&width=300&text=Forza+3",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300",
+    rom: "xbox360/forza3.iso",
   },
   {
-    id: 30,
+    id: 29,
     title: "Call of Duty: Modern Warfare 2",
     console: "Xbox 360",
     genre: "FPS",
     rating: 4.7,
-    players: "1-18",
-    image: "/placeholder.svg?height=200&width=300&text=COD+MW2",
+    image: "/placeholder.svg?height=200&width=300",
+    rom: "xbox360/cod-mw2.iso",
+  },
+  {
+    id: 30,
+    title: "Red Dead Redemption",
+    console: "Xbox 360",
+    genre: "Ação",
+    rating: 4.9,
+    image: "/placeholder.svg?height=200&width=300",
+    rom: "xbox360/rdr.iso",
   },
 ]
 
 const consoles = [
-  { name: "SNES", count: 8, icon: "🎮", color: "bg-purple-500" },
-  { name: "N64", count: 6, icon: "🕹️", color: "bg-blue-500" },
-  { name: "PS1", count: 6, icon: "🎯", color: "bg-gray-500" },
-  { name: "PS2", count: 5, icon: "🎪", color: "bg-black" },
-  { name: "Xbox 360", count: 5, icon: "🎲", color: "bg-green-500" },
+  { name: "SNES", count: 8, icon: "🎮" },
+  { name: "N64", count: 6, icon: "🕹️" },
+  { name: "PS1", count: 6, icon: "💿" },
+  { name: "PS2", count: 5, icon: "📀" },
+  { name: "Xbox 360", count: 5, icon: "🎯" },
 ]
 
 export default function JSGamingHub() {
@@ -327,11 +325,10 @@ export default function JSGamingHub() {
   const [currentUser, setCurrentUser] = useState<any>(null)
   const [selectedGame, setSelectedGame] = useState<any>(null)
   const [searchTerm, setSearchTerm] = useState("")
-  const [selectedConsole, setSelectedConsole] = useState("Todos")
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
+  const [selectedConsole, setSelectedConsole] = useState("all")
   const [loginForm, setLoginForm] = useState({ email: "", password: "" })
   const [loginError, setLoginError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoginOpen, setIsLoginOpen] = useState(false)
 
   // Sistema de usuários
   const users = [
@@ -340,71 +337,67 @@ export default function JSGamingHub() {
       password: "admin2024",
       name: "Jadson Silva",
       role: "admin",
-      avatar: "/placeholder.svg?height=40&width=40&text=JS",
+      isOwner: true,
     },
     {
       email: "admin@jsgaming.com",
       password: "retro2024",
       name: "Admin",
       role: "admin",
-      avatar: "/placeholder.svg?height=40&width=40&text=AD",
     },
     {
       email: "gamer@jsgaming.com",
       password: "cloud123",
-      name: "Gamer Pro",
+      name: "Gamer",
       role: "user",
-      avatar: "/placeholder.svg?height=40&width=40&text=GP",
+    },
+    {
+      email: "player@jsgaming.com",
+      password: "games456",
+      name: "Player",
+      role: "user",
     },
   ]
 
-  // Filtrar jogos
-  const filteredGames = featuredGames.filter((game) => {
-    const matchesSearch = game.title.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesConsole = selectedConsole === "Todos" || game.console === selectedConsole
-    return matchesSearch && matchesConsole
-  })
-
-  // Login
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
-    setLoginError("")
-
-    // Simular delay de autenticação
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
     const user = users.find((u) => u.email === loginForm.email && u.password === loginForm.password)
 
     if (user) {
       setCurrentUser(user)
       setIsLoggedIn(true)
+      setIsLoginOpen(false)
+      setLoginError("")
       setLoginForm({ email: "", password: "" })
     } else {
       setLoginError("Email ou senha incorretos")
     }
-
-    setIsLoading(false)
   }
 
-  // Logout
   const handleLogout = () => {
     setIsLoggedIn(false)
     setCurrentUser(null)
     setSelectedGame(null)
   }
 
-  // Tela de Login
+  const filteredGames = featuredGames.filter((game) => {
+    const matchesSearch =
+      game.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      game.genre.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesConsole = selectedConsole === "all" || game.console === selectedConsole
+    return matchesSearch && matchesConsole
+  })
+
   if (!isLoggedIn) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
+            <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
               <Gamepad2 className="w-8 h-8 text-white" />
             </div>
             <CardTitle className="text-2xl font-bold">J.S Gaming Hub</CardTitle>
-            <CardDescription>Servidor de Jogos Retrô - Acesse sua conta para jogar</CardDescription>
+            <CardDescription>Servidor de Jogos Retrô - Acesse sua biblioteca de jogos clássicos</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
@@ -415,7 +408,7 @@ export default function JSGamingHub() {
                   type="email"
                   placeholder="seu@email.com"
                   value={loginForm.email}
-                  onChange={(e) => setLoginForm((prev) => ({ ...prev, email: e.target.value }))}
+                  onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
                   required
                 />
               </div>
@@ -426,37 +419,28 @@ export default function JSGamingHub() {
                   type="password"
                   placeholder="••••••••"
                   value={loginForm.password}
-                  onChange={(e) => setLoginForm((prev) => ({ ...prev, password: e.target.value }))}
+                  onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
                   required
                 />
               </div>
-
               {loginError && (
                 <Alert className="border-red-200 bg-red-50">
                   <AlertDescription className="text-red-800">{loginError}</AlertDescription>
                 </Alert>
               )}
-
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Entrando...
-                  </>
-                ) : (
-                  "Entrar"
-                )}
+              <Button type="submit" className="w-full">
+                Entrar no Gaming Hub
               </Button>
             </form>
 
             <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-              <p className="text-sm font-medium mb-2">Contas de Teste:</p>
+              <p className="text-sm text-gray-600 mb-2">Credenciais de teste:</p>
               <div className="text-xs space-y-1">
                 <p>
                   <strong>Admin:</strong> jadsonreserva98@gmail.com / admin2024
                 </p>
                 <p>
-                  <strong>Gamer:</strong> gamer@jsgaming.com / cloud123
+                  <strong>Usuário:</strong> gamer@jsgaming.com / cloud123
                 </p>
               </div>
             </div>
@@ -466,289 +450,193 @@ export default function JSGamingHub() {
     )
   }
 
-  // Interface Principal
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900">
-      {/* Header */}
-      <header className="border-b border-gray-800 bg-black/20 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
-                <Gamepad2 className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-white">J.S Gaming Hub</h1>
-                <p className="text-sm text-gray-300">Servidor de Jogos Retrô</p>
-              </div>
-            </div>
+  if (selectedGame) {
+    return <GamePlayer game={selectedGame} onBack={() => setSelectedGame(null)} user={currentUser} />
+  }
 
-            <div className="flex items-center space-x-4">
-              <CloudServerStatus />
-              <div className="flex items-center space-x-2">
-                <img
-                  src={currentUser?.avatar || "/placeholder.svg"}
-                  alt={currentUser?.name}
-                  className="w-8 h-8 rounded-full"
-                />
-                <div className="text-right">
-                  <p className="text-sm font-medium text-white">{currentUser?.name}</p>
-                  <div className="flex items-center space-x-1">
-                    {currentUser?.role === "admin" && <Crown className="w-3 h-3 text-yellow-400" />}
-                    <p className="text-xs text-gray-300 capitalize">{currentUser?.role}</p>
-                  </div>
-                </div>
-                <Button variant="ghost" size="sm" onClick={handleLogout}>
-                  <LogOut className="w-4 h-4" />
-                </Button>
-              </div>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
+      {/* Header */}
+      <header className="bg-black/20 backdrop-blur-sm border-b border-white/10">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <Gamepad2 className="w-6 h-6 text-white" />
             </div>
+            <div>
+              <h1 className="text-xl font-bold text-white">J.S Gaming Hub</h1>
+              <p className="text-sm text-gray-300">Servidor de Jogos Retrô</p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-4">
+            <CloudServerStatus />
+            <div className="flex items-center space-x-2 text-white">
+              <User className="w-4 h-4" />
+              <span className="text-sm">{currentUser?.name}</span>
+              {currentUser?.isOwner && (
+                <Badge variant="secondary" className="text-xs">
+                  Owner
+                </Badge>
+              )}
+              {currentUser?.role === "admin" && !currentUser?.isOwner && (
+                <Badge variant="outline" className="text-xs">
+                  Admin
+                </Badge>
+              )}
+            </div>
+            <Button variant="ghost" size="sm" onClick={handleLogout}>
+              <LogOut className="w-4 h-4" />
+            </Button>
           </div>
         </div>
       </header>
 
-      {/* Game Player Modal */}
-      {selectedGame && <GamePlayer game={selectedGame} onClose={() => setSelectedGame(null)} />}
-
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="games" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-black/20">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="games">Jogos</TabsTrigger>
             <TabsTrigger value="devices">Dispositivos</TabsTrigger>
             <TabsTrigger value="install">Instalação</TabsTrigger>
             <TabsTrigger value="settings">Configurações</TabsTrigger>
           </TabsList>
 
-          {/* Games Tab */}
           <TabsContent value="games" className="space-y-6">
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Card className="bg-black/20 border-gray-700">
-                <CardContent className="p-4">
-                  <div className="flex items-center space-x-2">
-                    <Trophy className="w-5 h-5 text-yellow-400" />
-                    <div>
-                      <p className="text-sm text-gray-300">Total de Jogos</p>
-                      <p className="text-2xl font-bold text-white">{featuredGames.length}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-black/20 border-gray-700">
-                <CardContent className="p-4">
-                  <div className="flex items-center space-x-2">
-                    <Gamepad2 className="w-5 h-5 text-blue-400" />
-                    <div>
-                      <p className="text-sm text-gray-300">Consoles</p>
-                      <p className="text-2xl font-bold text-white">{consoles.length}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-black/20 border-gray-700">
-                <CardContent className="p-4">
-                  <div className="flex items-center space-x-2">
-                    <Users className="w-5 h-5 text-green-400" />
-                    <div>
-                      <p className="text-sm text-gray-300">Usuários Online</p>
-                      <p className="text-2xl font-bold text-white">1</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-black/20 border-gray-700">
-                <CardContent className="p-4">
-                  <div className="flex items-center space-x-2">
-                    <Zap className="w-5 h-5 text-purple-400" />
-                    <div>
-                      <p className="text-sm text-gray-300">Status</p>
-                      <p className="text-lg font-bold text-green-400">Online</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Consoles */}
-            <div className="space-y-4">
-              <h2 className="text-xl font-bold text-white">Consoles Disponíveis</h2>
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                {consoles.map((console) => (
-                  <Card
-                    key={console.name}
-                    className={`cursor-pointer transition-all hover:scale-105 ${
-                      selectedConsole === console.name
-                        ? "ring-2 ring-purple-500 bg-purple-500/20"
-                        : "bg-black/20 hover:bg-black/30"
-                    } border-gray-700`}
-                    onClick={() => setSelectedConsole(selectedConsole === console.name ? "Todos" : console.name)}
-                  >
-                    <CardContent className="p-4 text-center">
-                      <div className="text-2xl mb-2">{console.icon}</div>
-                      <h3 className="font-semibold text-white">{console.name}</h3>
-                      <p className="text-sm text-gray-300">{console.count} jogos</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-
-            {/* Search and Filters */}
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-              <div className="flex items-center space-x-2 flex-1">
-                <Search className="w-5 h-5 text-gray-400" />
+            {/* Busca e Filtros */}
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
                   placeholder="Buscar jogos..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="bg-black/20 border-gray-700 text-white"
+                  className="pl-10"
                 />
               </div>
-
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant={viewMode === "grid" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("grid")}
-                >
-                  <Grid3X3 className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant={viewMode === "list" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("list")}
-                >
-                  <List className="w-4 h-4" />
-                </Button>
-              </div>
+              <select
+                value={selectedConsole}
+                onChange={(e) => setSelectedConsole(e.target.value)}
+                className="px-3 py-2 border rounded-md bg-background"
+              >
+                <option value="all">Todos os Consoles</option>
+                {consoles.map((console) => (
+                  <option key={console.name} value={console.name}>
+                    {console.name} ({console.count})
+                  </option>
+                ))}
+              </select>
             </div>
 
-            {/* Games Grid */}
-            <div
-              className={`grid gap-4 ${
-                viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid-cols-1"
-              }`}
-            >
-              {filteredGames.map((game) => (
-                <Card
-                  key={game.id}
-                  className="bg-black/20 border-gray-700 hover:bg-black/30 transition-all cursor-pointer group"
-                  onClick={() => setSelectedGame(game)}
-                >
+            {/* Estatísticas dos Consoles */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              {consoles.map((console) => (
+                <Card key={console.name} className="text-center">
                   <CardContent className="p-4">
-                    <div className={`${viewMode === "list" ? "flex items-center space-x-4" : "space-y-3"}`}>
-                      <img
-                        src={game.image || "/placeholder.svg"}
-                        alt={game.title}
-                        className={`${
-                          viewMode === "list" ? "w-16 h-16" : "w-full h-32"
-                        } object-cover rounded-lg group-hover:scale-105 transition-transform`}
-                      />
-
-                      <div className="flex-1 space-y-2">
-                        <div className="flex items-center justify-between">
-                          <h3 className="font-semibold text-white group-hover:text-purple-400 transition-colors">
-                            {game.title}
-                          </h3>
-                          <div className="flex items-center space-x-1">
-                            <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                            <span className="text-sm text-gray-300">{game.rating}</span>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center space-x-2">
-                          <Badge variant="secondary" className="text-xs">
-                            {game.console}
-                          </Badge>
-                          <Badge variant="outline" className="text-xs">
-                            {game.genre}
-                          </Badge>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-400">{game.players} jogadores</span>
-                          <Button size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Play className="w-4 h-4 mr-1" />
-                            Jogar
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
+                    <div className="text-2xl mb-2">{console.icon}</div>
+                    <h3 className="font-semibold">{console.name}</h3>
+                    <p className="text-sm text-gray-600">{console.count} jogos</p>
                   </CardContent>
                 </Card>
               ))}
             </div>
 
-            {filteredGames.length === 0 && (
-              <div className="text-center py-12">
-                <Gamepad2 className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-400 mb-2">Nenhum jogo encontrado</h3>
-                <p className="text-gray-500">Tente ajustar os filtros ou termo de busca</p>
-              </div>
-            )}
+            {/* Grid de Jogos */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filteredGames.map((game) => (
+                <Card key={game.id} className="group hover:shadow-lg transition-shadow cursor-pointer">
+                  <div className="relative overflow-hidden rounded-t-lg">
+                    <img
+                      src={game.image || "/placeholder.svg"}
+                      alt={game.title}
+                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform"
+                    />
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Button
+                        onClick={() => setSelectedGame(game)}
+                        className="bg-white/20 backdrop-blur-sm hover:bg-white/30"
+                      >
+                        <Play className="w-4 h-4 mr-2" />
+                        Jogar
+                      </Button>
+                    </div>
+                  </div>
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="font-semibold text-sm leading-tight">{game.title}</h3>
+                      <Badge variant="secondary" className="text-xs ml-2">
+                        {game.console}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-2">{game.genre}</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                        <span className="text-sm ml-1">{game.rating}</span>
+                      </div>
+                      <Button size="sm" variant="ghost" onClick={() => setSelectedGame(game)}>
+                        <Play className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </TabsContent>
 
-          {/* Devices Tab */}
           <TabsContent value="devices">
             <DeviceCompatibility />
           </TabsContent>
 
-          {/* Installation Tab */}
           <TabsContent value="install">
             <InstallationGuide />
           </TabsContent>
 
-          {/* Settings Tab */}
-          <TabsContent value="settings" className="space-y-6">
-            <Card className="bg-black/20 border-gray-700">
+          <TabsContent value="settings">
+            <Card>
               <CardHeader>
-                <CardTitle className="text-white">Configurações do Sistema</CardTitle>
-                <CardDescription>Gerencie as configurações do servidor de jogos</CardDescription>
+                <CardTitle>Configurações do Sistema</CardTitle>
+                <CardDescription>Gerencie as configurações do seu gaming hub</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-white">Qualidade de Vídeo</Label>
-                    <select className="w-full p-2 rounded bg-black/20 border border-gray-700 text-white">
-                      <option>Alta (1080p)</option>
-                      <option>Média (720p)</option>
-                      <option>Baixa (480p)</option>
-                    </select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label className="text-white">Qualidade de Áudio</Label>
-                    <select className="w-full p-2 rounded bg-black/20 border border-gray-700 text-white">
-                      <option>Alta</option>
-                      <option>Média</option>
-                      <option>Baixa</option>
-                    </select>
-                  </div>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <Wifi className="w-8 h-8 mx-auto mb-2 text-green-500" />
+                      <h3 className="font-semibold">Controles Wireless</h3>
+                      <p className="text-sm text-gray-600">Conectados: 2</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <Bluetooth className="w-8 h-8 mx-auto mb-2 text-blue-500" />
+                      <h3 className="font-semibold">Bluetooth</h3>
+                      <p className="text-sm text-gray-600">Ativo</p>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <Usb className="w-8 h-8 mx-auto mb-2 text-purple-500" />
+                      <h3 className="font-semibold">USB</h3>
+                      <p className="text-sm text-gray-600">3 portas ativas</p>
+                    </CardContent>
+                  </Card>
                 </div>
 
                 {currentUser?.role === "admin" && (
-                  <div className="pt-4 border-t border-gray-700">
-                    <h3 className="text-lg font-semibold text-white mb-4">Configurações de Administrador</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Button variant="outline" className="justify-start bg-transparent">
-                        <Users className="w-4 h-4 mr-2" />
+                  <div className="border-t pt-6">
+                    <h3 className="text-lg font-semibold mb-4">Configurações de Administrador</h3>
+                    <div className="space-y-4">
+                      <Button variant="outline" className="w-full justify-start bg-transparent">
+                        <Settings className="w-4 h-4 mr-2" />
                         Gerenciar Usuários
                       </Button>
-                      <Button variant="outline" className="justify-start bg-transparent">
-                        <Settings className="w-4 h-4 mr-2" />
-                        Configurações do Servidor
+                      <Button variant="outline" className="w-full justify-start bg-transparent">
+                        <Download className="w-4 h-4 mr-2" />
+                        Adicionar ROMs
                       </Button>
-                      <Button variant="outline" className="justify-start bg-transparent">
-                        <Shield className="w-4 h-4 mr-2" />
-                        Segurança
-                      </Button>
-                      <Button variant="outline" className="justify-start bg-transparent">
+                      <Button variant="outline" className="w-full justify-start bg-transparent">
                         <Monitor className="w-4 h-4 mr-2" />
-                        Monitoramento
+                        Configurar Servidor
                       </Button>
                     </div>
                   </div>
@@ -757,7 +645,7 @@ export default function JSGamingHub() {
             </Card>
           </TabsContent>
         </Tabs>
-      </main>
+      </div>
     </div>
   )
 }
