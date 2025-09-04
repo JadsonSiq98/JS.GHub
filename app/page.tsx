@@ -1,651 +1,1033 @@
 "use client"
 
-import type React from "react"
-
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Label } from "@/components/ui/label"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { GamePlayer } from "@/components/game-player"
-import { DeviceCompatibility } from "@/components/device-compatibility"
-import { InstallationGuide } from "@/components/installation-guide"
-import { CloudServerStatus } from "@/components/cloud-server-status"
-import {
-  Search,
-  Gamepad2,
-  Monitor,
-  Settings,
-  User,
-  LogOut,
-  Play,
-  Star,
-  Download,
-  Wifi,
-  Bluetooth,
-  Usb,
-} from "lucide-react"
-
-// Dados dos jogos organizados por console
 const featuredGames = [
-  // SNES Games
+  // SNES Games (20 jogos)
   {
     id: 1,
-    title: "Super Mario World",
+    title: "ActRaiser",
     console: "SNES",
-    genre: "Plataforma",
-    rating: 4.9,
-    image: "/placeholder-5gd0m.png",
-    rom: "snes/super-mario-world.smc",
+    genre: "Ação/Simulação",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300&text=ActRaiser",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/ActRaiser%20%28USA%29.zip",
   },
   {
     id: 2,
-    title: "The Legend of Zelda: A Link to the Past",
-    console: "SNES",
-    genre: "Aventura",
-    rating: 4.8,
-    image: "/placeholder-zmsj6.png",
-    rom: "snes/zelda-alttp.smc",
-  },
-  {
-    id: 3,
-    title: "Super Metroid",
-    console: "SNES",
-    genre: "Aventura",
-    rating: 4.9,
-    image: "/placeholder-beiws.png",
-    rom: "snes/super-metroid.smc",
-  },
-  {
-    id: 4,
     title: "Chrono Trigger",
     console: "SNES",
     genre: "RPG",
     rating: 4.9,
-    image: "/placeholder-2buyo.png",
-    rom: "snes/chrono-trigger.smc",
+    image: "/placeholder.svg?height=200&width=300&text=Chrono+Trigger",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Chrono%20Trigger%20%28USA%29.zip",
   },
   {
-    id: 5,
-    title: "Final Fantasy VI",
+    id: 3,
+    title: "Contra III: The Alien Wars",
     console: "SNES",
-    genre: "RPG",
-    rating: 4.8,
-    image: "/placeholder-mou3w.png",
-    rom: "snes/ff6.smc",
+    genre: "Ação",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=Contra+III",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Contra%20III%20-%20The%20Alien%20Wars%20%28USA%29.zip",
   },
   {
-    id: 6,
+    id: 4,
     title: "Donkey Kong Country",
     console: "SNES",
     genre: "Plataforma",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=DK+Country",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Donkey%20Kong%20Country%20%28USA%29%20%28Rev%201%29.zip",
+  },
+  {
+    id: 5,
+    title: "Donkey Kong Country 2",
+    console: "SNES",
+    genre: "Plataforma",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=DK+Country+2",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Donkey%20Kong%20Country%202%20-%20Diddy%27s%20Kong%20Quest%20%28USA%29%20%28Rev%201%29.zip",
+  },
+  {
+    id: 6,
+    title: "Donkey Kong Country 3",
+    console: "SNES",
+    genre: "Plataforma",
     rating: 4.7,
-    image: "/placeholder-4s062.png",
-    rom: "snes/dkc.smc",
+    image: "/placeholder.svg?height=200&width=300&text=DK+Country+3",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Donkey%20Kong%20Country%203%20-%20Dixie%20Kong%27s%20Double%20Trouble%21%20%28USA%29.zip",
   },
   {
     id: 7,
-    title: "Street Fighter II Turbo",
+    title: "EarthBound",
     console: "SNES",
-    genre: "Luta",
-    rating: 4.6,
-    image: "/placeholder-ipr07.png",
-    rom: "snes/sf2-turbo.smc",
+    genre: "RPG",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=EarthBound",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/EarthBound%20%28USA%29.zip",
   },
   {
     id: 8,
-    title: "Super Mario Kart",
+    title: "Final Fantasy III (VI)",
+    console: "SNES",
+    genre: "RPG",
+    rating: 4.9,
+    image: "/placeholder.svg?height=200&width=300&text=FF+VI",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Final%20Fantasy%20III%20%28USA%29.zip",
+  },
+  {
+    id: 9,
+    title: "F-Zero",
     console: "SNES",
     genre: "Corrida",
     rating: 4.5,
-    image: "/placeholder-a1d14.png",
-    rom: "snes/mario-kart.smc",
+    image: "/placeholder.svg?height=200&width=300&text=F-Zero",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/F-Zero%20%28USA%29.zip",
+  },
+  {
+    id: 10,
+    title: "Kirby Super Star",
+    console: "SNES",
+    genre: "Plataforma",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=Kirby+Super+Star",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Kirby%20Super%20Star%20%28USA%29.zip",
+  },
+  {
+    id: 11,
+    title: "Mega Man X",
+    console: "SNES",
+    genre: "Ação/Plataforma",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=Mega+Man+X",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Mega%20Man%20X%20%28USA%29.zip",
+  },
+  {
+    id: 12,
+    title: "Mortal Kombat",
+    console: "SNES",
+    genre: "Luta",
+    rating: 4.4,
+    image: "/placeholder.svg?height=200&width=300&text=Mortal+Kombat",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Mortal%20Kombat%20%28USA%29.zip",
+  },
+  {
+    id: 13,
+    title: "Mortal Kombat II",
+    console: "SNES",
+    genre: "Luta",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300&text=MK+II",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Mortal%20Kombat%20II%20%28USA%29.zip",
+  },
+  {
+    id: 14,
+    title: "Secret of Mana",
+    console: "SNES",
+    genre: "RPG",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=Secret+of+Mana",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Secret%20of%20Mana%20%28USA%29.zip",
+  },
+  {
+    id: 15,
+    title: "Star Fox",
+    console: "SNES",
+    genre: "Ação/Voo",
+    rating: 4.5,
+    image: "/placeholder.svg?height=200&width=300&text=Star+Fox",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Star%20Fox%20%28USA%29%20%28Rev%202%29.zip",
+  },
+  {
+    id: 16,
+    title: "Street Fighter II Turbo",
+    console: "SNES",
+    genre: "Luta",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=SF+II+Turbo",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Street%20Fighter%20II%20Turbo%20%28USA%29.zip",
+  },
+  {
+    id: 17,
+    title: "Super Castlevania IV",
+    console: "SNES",
+    genre: "Ação/Plataforma",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=Castlevania+IV",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Super%20Castlevania%20IV%20%28USA%29.zip",
+  },
+  {
+    id: 18,
+    title: "Super Mario Kart",
+    console: "SNES",
+    genre: "Corrida",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300&text=Mario+Kart",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Super%20Mario%20Kart%20%28USA%29.zip",
+  },
+  {
+    id: 19,
+    title: "Super Mario RPG",
+    console: "SNES",
+    genre: "RPG",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=Mario+RPG",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Super%20Mario%20RPG%20-%20Legend%20of%20the%20Seven%20Stars%20%28USA%29.zip",
+  },
+  {
+    id: 20,
+    title: "Super Mario World",
+    console: "SNES",
+    genre: "Plataforma",
+    rating: 4.9,
+    image: "/placeholder.svg?height=200&width=300&text=Mario+World",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Super%20Mario%20World%20%28USA%29.zip",
+  },
+  {
+    id: 21,
+    title: "Super Metroid",
+    console: "SNES",
+    genre: "Aventura/Ação",
+    rating: 4.9,
+    image: "/placeholder.svg?height=200&width=300&text=Super+Metroid",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Super%20Metroid%20%28USA%2C%20Europe%29.zip",
+  },
+  {
+    id: 22,
+    title: "The Legend of Zelda: A Link to the Past",
+    console: "SNES",
+    genre: "Aventura",
+    rating: 4.9,
+    image: "/placeholder.svg?height=200&width=300&text=Zelda+ALTTP",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Legend%20of%20Zelda%2C%20The%20-%20A%20Link%20to%20the%20Past%20%28USA%29.zip",
+  },
+  {
+    id: 23,
+    title: "Yoshi's Island",
+    console: "SNES",
+    genre: "Plataforma",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=Yoshi+Island",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System/Super%20Mario%20World%202%20-%20Yoshi%27s%20Island%20%28USA%29.zip",
   },
 
-  // N64 Games
+  // N64 Games (19 jogos)
   {
-    id: 9,
+    id: 24,
+    title: "1080° Snowboarding",
+    console: "N64",
+    genre: "Esporte",
+    rating: 4.4,
+    image: "/placeholder.svg?height=200&width=300&text=1080+Snowboarding",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/1080%20Snowboarding%20%28USA%29.zip",
+  },
+  {
+    id: 25,
+    title: "Banjo-Kazooie",
+    console: "N64",
+    genre: "Plataforma",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=Banjo+Kazooie",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/Banjo-Kazooie%20%28USA%29.zip",
+  },
+  {
+    id: 26,
+    title: "Banjo-Tooie",
+    console: "N64",
+    genre: "Plataforma",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=Banjo+Tooie",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/Banjo-Tooie%20%28USA%29.zip",
+  },
+  {
+    id: 27,
+    title: "Conker's Bad Fur Day",
+    console: "N64",
+    genre: "Plataforma",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300&text=Conker",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/Conker%27s%20Bad%20Fur%20Day%20%28USA%29.zip",
+  },
+  {
+    id: 28,
+    title: "Donkey Kong 64",
+    console: "N64",
+    genre: "Plataforma",
+    rating: 4.5,
+    image: "/placeholder.svg?height=200&width=300&text=DK+64",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/Donkey%20Kong%2064%20%28USA%29.zip",
+  },
+  {
+    id: 29,
+    title: "F-Zero X",
+    console: "N64",
+    genre: "Corrida",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300&text=F-Zero+X",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/F-Zero%20X%20%28USA%29.zip",
+  },
+  {
+    id: 30,
+    title: "GoldenEye 007",
+    console: "N64",
+    genre: "FPS",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=GoldenEye",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/GoldenEye%20007%20%28USA%29.zip",
+  },
+  {
+    id: 31,
+    title: "Mario Kart 64",
+    console: "N64",
+    genre: "Corrida",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=Mario+Kart+64",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/Mario%20Kart%2064%20%28USA%29.zip",
+  },
+  {
+    id: 32,
+    title: "Mario Party",
+    console: "N64",
+    genre: "Party",
+    rating: 4.5,
+    image: "/placeholder.svg?height=200&width=300&text=Mario+Party",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/Mario%20Party%20%28USA%29.zip",
+  },
+  {
+    id: 33,
+    title: "Mario Party 2",
+    console: "N64",
+    genre: "Party",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300&text=Mario+Party+2",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/Mario%20Party%202%20%28USA%29.zip",
+  },
+  {
+    id: 34,
+    title: "Mario Party 3",
+    console: "N64",
+    genre: "Party",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300&text=Mario+Party+3",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/Mario%20Party%203%20%28USA%29.zip",
+  },
+  {
+    id: 35,
+    title: "Mario Tennis",
+    console: "N64",
+    genre: "Esporte",
+    rating: 4.4,
+    image: "/placeholder.svg?height=200&width=300&text=Mario+Tennis",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/Mario%20Tennis%20%28USA%29.zip",
+  },
+  {
+    id: 36,
+    title: "Paper Mario",
+    console: "N64",
+    genre: "RPG",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=Paper+Mario",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/Paper%20Mario%20%28USA%29.zip",
+  },
+  {
+    id: 37,
+    title: "Perfect Dark",
+    console: "N64",
+    genre: "FPS",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300&text=Perfect+Dark",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/Perfect%20Dark%20%28USA%29%20%28Rev%201%29.zip",
+  },
+  {
+    id: 38,
+    title: "Pokémon Snap",
+    console: "N64",
+    genre: "Aventura",
+    rating: 4.3,
+    image: "/placeholder.svg?height=200&width=300&text=Pokemon+Snap",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/Pokemon%20Snap%20%28USA%29.zip",
+  },
+  {
+    id: 39,
+    title: "Pokémon Stadium",
+    console: "N64",
+    genre: "Luta",
+    rating: 4.2,
+    image: "/placeholder.svg?height=200&width=300&text=Pokemon+Stadium",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/Pokemon%20Stadium%20%28USA%29.zip",
+  },
+  {
+    id: 40,
+    title: "Star Fox 64",
+    console: "N64",
+    genre: "Ação/Voo",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=Star+Fox+64",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/Star%20Fox%2064%20%28USA%29.zip",
+  },
+  {
+    id: 41,
     title: "Super Mario 64",
     console: "N64",
     genre: "Plataforma",
     rating: 4.9,
-    image: "/placeholder-ca4mp.png",
-    rom: "n64/mario64.z64",
+    image: "/placeholder.svg?height=200&width=300&text=Mario+64",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/Super%20Mario%2064%20%28USA%29.zip",
   },
   {
-    id: 10,
-    title: "The Legend of Zelda: Ocarina of Time",
-    console: "N64",
-    genre: "Aventura",
-    rating: 4.9,
-    image: "/placeholder-c1jg9.png",
-    rom: "n64/zelda-oot.z64",
-  },
-  {
-    id: 11,
-    title: "GoldenEye 007",
-    console: "N64",
-    genre: "FPS",
-    rating: 4.7,
-    image: "/placeholder-a98pj.png",
-    rom: "n64/goldeneye.z64",
-  },
-  {
-    id: 12,
+    id: 42,
     title: "Super Smash Bros.",
     console: "N64",
     genre: "Luta",
     rating: 4.8,
-    image: "/placeholder-54e5h.png",
-    rom: "n64/smash-bros.z64",
+    image: "/placeholder.svg?height=200&width=300&text=Smash+Bros",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/Super%20Smash%20Bros.%20%28USA%29.zip",
   },
   {
-    id: 13,
-    title: "Mario Kart 64",
+    id: 43,
+    title: "The Legend of Zelda: Ocarina of Time",
+    console: "N64",
+    genre: "Aventura",
+    rating: 4.9,
+    image: "/placeholder.svg?height=200&width=300&text=Zelda+OOT",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/Legend%20of%20Zelda%2C%20The%20-%20Ocarina%20of%20Time%20%28USA%29%20%28Rev%202%29.zip",
+  },
+  {
+    id: 44,
+    title: "The Legend of Zelda: Majora's Mask",
+    console: "N64",
+    genre: "Aventura",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=Zelda+MM",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/Legend%20of%20Zelda%2C%20The%20-%20Majora%27s%20Mask%20%28USA%29.zip",
+  },
+  {
+    id: 45,
+    title: "Turok: Dinosaur Hunter",
+    console: "N64",
+    genre: "FPS",
+    rating: 4.4,
+    image: "/placeholder.svg?height=200&width=300&text=Turok",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/Turok%20-%20Dinosaur%20Hunter%20%28USA%29%20%28Rev%201%29.zip",
+  },
+  {
+    id: 46,
+    title: "Wave Race 64",
     console: "N64",
     genre: "Corrida",
-    rating: 4.6,
-    image: "/placeholder-2l20m.png",
-    rom: "n64/mario-kart-64.z64",
-  },
-  {
-    id: 14,
-    title: "Super Mario Party",
-    console: "N64",
-    genre: "Party",
     rating: 4.5,
-    image: "/placeholder-s3bz0.png",
-    rom: "n64/mario-party.z64",
+    image: "/placeholder.svg?height=200&width=300&text=Wave+Race",
+    rom: "https://archive.org/download/No-Intro-Collection_2016-01-03_Fixed/Nintendo%20-%20Nintendo%2064/Wave%20Race%2064%20%28USA%29.zip",
   },
 
-  // PlayStation 1 Games
+  // PlayStation 1 Games (22 jogos)
   {
-    id: 15,
+    id: 47,
+    title: "Breath of Fire III",
+    console: "PS1",
+    genre: "RPG",
+    rating: 4.5,
+    image: "/placeholder.svg?height=200&width=300&text=BOF+III",
+    rom: "https://archive.org/download/chd_psx/Breath%20of%20Fire%20III%20%28USA%29.chd",
+  },
+  {
+    id: 48,
+    title: "Castlevania: Symphony of the Night",
+    console: "PS1",
+    genre: "Ação/RPG",
+    rating: 4.9,
+    image: "/placeholder.svg?height=200&width=300&text=Castlevania+SOTN",
+    rom: "https://archive.org/download/chd_psx/Castlevania%20-%20Symphony%20of%20the%20Night%20%28USA%29.chd",
+  },
+  {
+    id: 49,
+    title: "Chrono Cross",
+    console: "PS1",
+    genre: "RPG",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300&text=Chrono+Cross",
+    rom: "https://archive.org/download/chd_psx/Chrono%20Cross%20%28USA%29.chd",
+  },
+  {
+    id: 50,
+    title: "Crash Bandicoot 2",
+    console: "PS1",
+    genre: "Plataforma",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=Crash+2",
+    rom: "https://archive.org/download/chd_psx/Crash%20Bandicoot%202%20-%20Cortex%20Strikes%20Back%20%28USA%29.chd",
+  },
+  {
+    id: 51,
     title: "Final Fantasy VII",
     console: "PS1",
     genre: "RPG",
     rating: 4.9,
-    image: "/final-fantasy-vii-ps1-cover.png",
-    rom: "ps1/ff7.bin",
+    image: "/placeholder.svg?height=200&width=300&text=FF+VII",
+    rom: "https://archive.org/download/chd_psx/Final%20Fantasy%20VII%20%28USA%29%20%28Disc%201%29.chd",
   },
   {
-    id: 16,
-    title: "Metal Gear Solid",
+    id: 52,
+    title: "Final Fantasy IX",
     console: "PS1",
-    genre: "Ação",
+    genre: "RPG",
     rating: 4.8,
-    image: "/placeholder-y41te.png",
-    rom: "ps1/mgs.bin",
+    image: "/placeholder.svg?height=200&width=300&text=FF+IX",
+    rom: "https://archive.org/download/chd_psx/Final%20Fantasy%20IX%20%28USA%29%20%28Disc%201%29.chd",
   },
   {
-    id: 17,
-    title: "Resident Evil 2",
+    id: 53,
+    title: "Final Fantasy Tactics",
     console: "PS1",
-    genre: "Terror",
+    genre: "Estratégia/RPG",
     rating: 4.7,
-    image: "/placeholder.svg?height=200&width=300",
-    rom: "ps1/re2.bin",
+    image: "/placeholder.svg?height=200&width=300&text=FF+Tactics",
+    rom: "https://archive.org/download/chd_psx/Final%20Fantasy%20Tactics%20%28USA%29.chd",
   },
   {
-    id: 18,
-    title: "Crash Bandicoot 3",
+    id: 54,
+    title: "Gran Turismo",
     console: "PS1",
-    genre: "Plataforma",
+    genre: "Corrida",
     rating: 4.6,
-    image: "/placeholder.svg?height=200&width=300",
-    rom: "ps1/crash3.bin",
+    image: "/placeholder.svg?height=200&width=300&text=Gran+Turismo",
+    rom: "https://archive.org/download/chd_psx/Gran%20Turismo%20%28USA%29%20%28v1.2%29.chd",
   },
   {
-    id: 19,
+    id: 55,
     title: "Gran Turismo 2",
     console: "PS1",
     genre: "Corrida",
-    rating: 4.5,
-    image: "/placeholder.svg?height=200&width=300",
-    rom: "ps1/gt2.bin",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=GT+2",
+    rom: "https://archive.org/download/chd_psx/Gran%20Turismo%202%20%28USA%29%20%28Arcade%20Mode%29.chd",
   },
   {
-    id: 20,
+    id: 56,
+    title: "Legend of Mana",
+    console: "PS1",
+    genre: "RPG",
+    rating: 4.5,
+    image: "/placeholder.svg?height=200&width=300&text=Legend+of+Mana",
+    rom: "https://archive.org/download/chd_psx/Legend%20of%20Mana%20%28USA%29.chd",
+  },
+  {
+    id: 57,
+    title: "Legacy of Kain: Soul Reaver",
+    console: "PS1",
+    genre: "Ação/Aventura",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300&text=Soul+Reaver",
+    rom: "https://archive.org/download/chd_psx/Legacy%20of%20Kain%20-%20Soul%20Reaver%20%28USA%29.chd",
+  },
+  {
+    id: 58,
+    title: "MediEvil",
+    console: "PS1",
+    genre: "Ação/Aventura",
+    rating: 4.4,
+    image: "/placeholder.svg?height=200&width=300&text=MediEvil",
+    rom: "https://archive.org/download/chd_psx/MediEvil%20%28USA%29.chd",
+  },
+  {
+    id: 59,
+    title: "Metal Gear Solid",
+    console: "PS1",
+    genre: "Ação/Stealth",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=MGS",
+    rom: "https://archive.org/download/chd_psx/Metal%20Gear%20Solid%20%28USA%29%20%28Disc%201%29%20%28Rev%201%29.chd",
+  },
+  {
+    id: 60,
+    title: "Oddworld: Abe's Oddysee",
+    console: "PS1",
+    genre: "Plataforma/Puzzle",
+    rating: 4.5,
+    image: "/placeholder.svg?height=200&width=300&text=Oddworld",
+    rom: "https://archive.org/download/chd_psx/Oddworld%20-%20Abe%27s%20Oddysee%20%28USA%29.chd",
+  },
+  {
+    id: 61,
+    title: "Parasite Eve",
+    console: "PS1",
+    genre: "RPG/Terror",
+    rating: 4.4,
+    image: "/placeholder.svg?height=200&width=300&text=Parasite+Eve",
+    rom: "https://archive.org/download/chd_psx/Parasite%20Eve%20%28USA%29%20%28Disc%201%29.chd",
+  },
+  {
+    id: 62,
+    title: "Resident Evil 2",
+    console: "PS1",
+    genre: "Terror/Ação",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=RE+2",
+    rom: "https://archive.org/download/chd_psx/Resident%20Evil%202%20%28USA%29%20%28Leon%29.chd",
+  },
+  {
+    id: 63,
+    title: "Ridge Racer Type 4",
+    console: "PS1",
+    genre: "Corrida",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300&text=Ridge+Racer+4",
+    rom: "https://archive.org/download/chd_psx/Ridge%20Racer%20Type%204%20%28USA%29.chd",
+  },
+  {
+    id: 64,
+    title: "Silent Hill",
+    console: "PS1",
+    genre: "Terror",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=Silent+Hill",
+    rom: "https://archive.org/download/chd_psx/Silent%20Hill%20%28USA%29.chd",
+  },
+  {
+    id: 65,
+    title: "Spyro the Dragon",
+    console: "PS1",
+    genre: "Plataforma",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300&text=Spyro",
+    rom: "https://archive.org/download/chd_psx/Spyro%20the%20Dragon%20%28USA%29.chd",
+  },
+  {
+    id: 66,
+    title: "Suikoden II",
+    console: "PS1",
+    genre: "RPG",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=Suikoden+II",
+    rom: "https://archive.org/download/chd_psx/Suikoden%20II%20%28USA%29.chd",
+  },
+  {
+    id: 67,
     title: "Tekken 3",
     console: "PS1",
     genre: "Luta",
-    rating: 4.7,
-    image: "/placeholder.svg?height=200&width=300",
-    rom: "ps1/tekken3.bin",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=Tekken+3",
+    rom: "https://archive.org/download/chd_psx/Tekken%203%20%28USA%29.chd",
+  },
+  {
+    id: 68,
+    title: "Tomb Raider",
+    console: "PS1",
+    genre: "Ação/Aventura",
+    rating: 4.5,
+    image: "/placeholder.svg?height=200&width=300&text=Tomb+Raider",
+    rom: "https://archive.org/download/chd_psx/Tomb%20Raider%20%28USA%29.chd",
+  },
+  {
+    id: 69,
+    title: "Tony Hawk's Pro Skater",
+    console: "PS1",
+    genre: "Esporte",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300&text=THPS",
+    rom: "https://archive.org/download/chd_psx/Tony%20Hawk%27s%20Pro%20Skater%20%28USA%29.chd",
+  },
+  {
+    id: 70,
+    title: "Vagrant Story",
+    console: "PS1",
+    genre: "RPG",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300&text=Vagrant+Story",
+    rom: "https://archive.org/download/chd_psx/Vagrant%20Story%20%28USA%29.chd",
+  },
+  {
+    id: 71,
+    title: "Wipeout XL",
+    console: "PS1",
+    genre: "Corrida",
+    rating: 4.5,
+    image: "/placeholder.svg?height=200&width=300&text=Wipeout+XL",
+    rom: "https://archive.org/download/chd_psx/Wipeout%20XL%20%28USA%29.chd",
   },
 
-  // PlayStation 2 Games
+  // PlayStation 2 Games (19 jogos)
   {
-    id: 21,
-    title: "Grand Theft Auto: San Andreas",
+    id: 72,
+    title: "Devil May Cry",
+    console: "PS2",
+    genre: "Ação",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=DMC",
+    rom: "https://archive.org/download/chd_ps2/Devil%20May%20Cry%20%28USA%29.chd",
+  },
+  {
+    id: 73,
+    title: "Devil May Cry 3",
     console: "PS2",
     genre: "Ação",
     rating: 4.8,
-    image: "/placeholder.svg?height=200&width=300",
-    rom: "ps2/gta-sa.iso",
+    image: "/placeholder.svg?height=200&width=300&text=DMC+3",
+    rom: "https://archive.org/download/chd_ps2/Devil%20May%20Cry%203%20-%20Dante%27s%20Awakening%20%28USA%29.chd",
   },
   {
-    id: 22,
-    title: "God of War",
-    console: "PS2",
-    genre: "Ação",
-    rating: 4.7,
-    image: "/placeholder.svg?height=200&width=300",
-    rom: "ps2/god-of-war.iso",
-  },
-  {
-    id: 23,
-    title: "Shadow of the Colossus",
-    console: "PS2",
-    genre: "Aventura",
-    rating: 4.9,
-    image: "/placeholder.svg?height=200&width=300",
-    rom: "ps2/sotc.iso",
-  },
-  {
-    id: 24,
+    id: 74,
     title: "Final Fantasy X",
     console: "PS2",
     genre: "RPG",
     rating: 4.8,
-    image: "/placeholder.svg?height=200&width=300",
-    rom: "ps2/ffx.iso",
+    image: "/placeholder.svg?height=200&width=300&text=FF+X",
+    rom: "https://archive.org/download/chd_ps2/Final%20Fantasy%20X%20%28USA%29.chd",
   },
   {
-    id: 25,
-    title: "Guitar Hero II",
+    id: 75,
+    title: "God of War",
     console: "PS2",
-    genre: "Música",
+    genre: "Ação",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=God+of+War",
+    rom: "https://archive.org/download/chd_ps2/God%20of%20War%20%28USA%29.chd",
+  },
+  {
+    id: 76,
+    title: "God of War 2",
+    console: "PS2",
+    genre: "Ação",
+    rating: 4.9,
+    image: "/placeholder.svg?height=200&width=300&text=GOW+2",
+    rom: "https://archive.org/download/chd_ps2/God%20of%20War%20II%20%28USA%29.chd",
+  },
+  {
+    id: 77,
+    title: "Grand Theft Auto III",
+    console: "PS2",
+    genre: "Ação",
     rating: 4.6,
-    image: "/placeholder.svg?height=200&width=300",
-    rom: "ps2/gh2.iso",
+    image: "/placeholder.svg?height=200&width=300&text=GTA+III",
+    rom: "https://archive.org/download/chd_ps2/Grand%20Theft%20Auto%20-%20Vice%20City%20%28USA%29.chd",
+  },
+  {
+    id: 78,
+    title: "Grand Theft Auto: Vice City",
+    console: "PS2",
+    genre: "Ação",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=GTA+VC",
+    rom: "https://archive.org/download/chd_ps2/Grand%20Theft%20Auto%20-%20Vice%20City%20%28USA%29.chd",
+  },
+  {
+    id: 79,
+    title: "Grand Theft Auto: San Andreas",
+    console: "PS2",
+    genre: "Ação",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=GTA+SA",
+    rom: "https://archive.org/download/chd_ps2/Grand%20Theft%20Auto%20-%20San%20Andreas%20%28USA%29.chd",
+  },
+  {
+    id: 80,
+    title: "Gran Turismo 4",
+    console: "PS2",
+    genre: "Corrida",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=GT+4",
+    rom: "https://archive.org/download/chd_ps2/Gran%20Turismo%204%20%28USA%29.chd",
+  },
+  {
+    id: 81,
+    title: "Ico",
+    console: "PS2",
+    genre: "Aventura",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300&text=Ico",
+    rom: "https://archive.org/download/chd_ps2/Ico%20%28USA%29.chd",
+  },
+  {
+    id: 82,
+    title: "Jak and Daxter",
+    console: "PS2",
+    genre: "Plataforma",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300&text=Jak+Daxter",
+    rom: "https://archive.org/download/chd_ps2/Jak%20and%20Daxter%20-%20The%20Precursor%20Legacy%20%28USA%29.chd",
+  },
+  {
+    id: 83,
+    title: "Kingdom Hearts",
+    console: "PS2",
+    genre: "RPG",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=Kingdom+Hearts",
+    rom: "https://archive.org/download/chd_ps2/Kingdom%20Hearts%20%28USA%29.chd",
+  },
+  {
+    id: 84,
+    title: "Kingdom Hearts II",
+    console: "PS2",
+    genre: "RPG",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=KH+II",
+    rom: "https://archive.org/download/chd_ps2/Kingdom%20Hearts%20II%20%28USA%29.chd",
+  },
+  {
+    id: 85,
+    title: "Metal Gear Solid 2",
+    console: "PS2",
+    genre: "Ação/Stealth",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=MGS+2",
+    rom: "https://archive.org/download/chd_ps2/Metal%20Gear%20Solid%202%20-%20Sons%20of%20Liberty%20%28USA%29.chd",
+  },
+  {
+    id: 86,
+    title: "Metal Gear Solid 3",
+    console: "PS2",
+    genre: "Ação/Stealth",
+    rating: 4.9,
+    image: "/placeholder.svg?height=200&width=300&text=MGS+3",
+    rom: "https://archive.org/download/chd_ps2/Metal%20Gear%20Solid%203%20-%20Snake%20Eater%20%28USA%29.chd",
+  },
+  {
+    id: 87,
+    title: "Okami",
+    console: "PS2",
+    genre: "Aventura",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=Okami",
+    rom: "https://archive.org/download/chd_ps2/Okami%20%28USA%29.chd",
+  },
+  {
+    id: 88,
+    title: "Persona 4",
+    console: "PS2",
+    genre: "RPG",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=Persona+4",
+    rom: "https://archive.org/download/chd_ps2/Shin%20Megami%20Tensei%20-%20Persona%204%20%28USA%29.chd",
+  },
+  {
+    id: 89,
+    title: "Shadow of the Colossus",
+    console: "PS2",
+    genre: "Aventura",
+    rating: 4.9,
+    image: "/placeholder.svg?height=200&width=300&text=SOTC",
+    rom: "https://archive.org/download/chd_ps2/Shadow%20of%20the%20Colossus%20%28USA%29.chd",
+  },
+  {
+    id: 90,
+    title: "Silent Hill 2",
+    console: "PS2",
+    genre: "Terror",
+    rating: 4.9,
+    image: "/placeholder.svg?height=200&width=300&text=SH+2",
+    rom: "https://archive.org/download/chd_ps2/Silent%20Hill%202%20%28USA%29.chd",
   },
 
-  // Xbox 360 Games
+  // Xbox 360 Games (22 jogos)
   {
-    id: 26,
-    title: "Halo 3",
+    id: 91,
+    title: "Alan Wake",
+    console: "Xbox 360",
+    genre: "Terror/Ação",
+    rating: 4.5,
+    image: "/placeholder.svg?height=200&width=300&text=Alan+Wake",
+    rom: "xbox360/alan-wake.iso",
+  },
+  {
+    id: 92,
+    title: "Assassin's Creed II",
+    console: "Xbox 360",
+    genre: "Ação/Aventura",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=AC+II",
+    rom: "xbox360/assassins-creed-2.iso",
+  },
+  {
+    id: 93,
+    title: "Batman: Arkham City",
+    console: "Xbox 360",
+    genre: "Ação",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=Batman+AC",
+    rom: "xbox360/batman-arkham-city.iso",
+  },
+  {
+    id: 94,
+    title: "BioShock",
+    console: "Xbox 360",
+    genre: "FPS/RPG",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=BioShock",
+    rom: "xbox360/bioshock.iso",
+  },
+  {
+    id: 95,
+    title: "Borderlands 2",
+    console: "Xbox 360",
+    genre: "FPS/RPG",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=Borderlands+2",
+    rom: "xbox360/borderlands-2.iso",
+  },
+  {
+    id: 96,
+    title: "Call of Duty 4: Modern Warfare",
     console: "Xbox 360",
     genre: "FPS",
     rating: 4.8,
-    image: "/placeholder.svg?height=200&width=300",
-    rom: "xbox360/halo3.iso",
+    image: "/placeholder.svg?height=200&width=300&text=COD+4",
+    rom: "xbox360/cod4-mw.iso",
   },
   {
-    id: 27,
-    title: "Gears of War",
-    console: "Xbox 360",
-    genre: "Ação",
-    rating: 4.7,
-    image: "/placeholder.svg?height=200&width=300",
-    rom: "xbox360/gow.iso",
-  },
-  {
-    id: 28,
-    title: "Forza Motorsport 3",
-    console: "Xbox 360",
-    genre: "Corrida",
-    rating: 4.6,
-    image: "/placeholder.svg?height=200&width=300",
-    rom: "xbox360/forza3.iso",
-  },
-  {
-    id: 29,
+    id: 97,
     title: "Call of Duty: Modern Warfare 2",
     console: "Xbox 360",
     genre: "FPS",
     rating: 4.7,
-    image: "/placeholder.svg?height=200&width=300",
+    image: "/placeholder.svg?height=200&width=300&text=COD+MW2",
     rom: "xbox360/cod-mw2.iso",
   },
   {
-    id: 30,
-    title: "Red Dead Redemption",
+    id: 98,
+    title: "Dark Souls",
+    console: "Xbox 360",
+    genre: "RPG/Ação",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300&text=Dark+Souls",
+    rom: "xbox360/dark-souls.iso",
+  },
+  {
+    id: 99,
+    title: "Fallout 3",
+    console: "Xbox 360",
+    genre: "RPG",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=Fallout+3",
+    rom: "xbox360/fallout-3.iso",
+  },
+  {
+    id: 100,
+    title: "Forza Horizon",
+    console: "Xbox 360",
+    genre: "Corrida",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300&text=Forza+Horizon",
+    rom: "xbox360/forza-horizon.iso",
+  },
+  {
+    id: 101,
+    title: "Gears of War",
+    console: "Xbox 360",
+    genre: "Ação/TPS",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=Gears+1",
+    rom: "xbox360/gears-of-war.iso",
+  },
+  {
+    id: 102,
+    title: "Gears of War 2",
+    console: "Xbox 360",
+    genre: "Ação/TPS",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=Gears+2",
+    rom: "xbox360/gears-of-war-2.iso",
+  },
+  {
+    id: 103,
+    title: "Grand Theft Auto IV",
     console: "Xbox 360",
     genre: "Ação",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300&text=GTA+IV",
+    rom: "xbox360/gta-iv.iso",
+  },
+  {
+    id: 104,
+    title: "Halo 3",
+    console: "Xbox 360",
+    genre: "FPS",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=Halo+3",
+    rom: "xbox360/halo-3.iso",
+  },
+  {
+    id: 105,
+    title: "Halo: Reach",
+    console: "Xbox 360",
+    genre: "FPS",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=Halo+Reach",
+    rom: "xbox360/halo-reach.iso",
+  },
+  {
+    id: 106,
+    title: "Limbo",
+    console: "Xbox 360",
+    genre: "Puzzle/Plataforma",
+    rating: 4.5,
+    image: "/placeholder.svg?height=200&width=300&text=Limbo",
+    rom: "xbox360/limbo.iso",
+  },
+  {
+    id: 107,
+    title: "Mass Effect 2",
+    console: "Xbox 360",
+    genre: "RPG",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=Mass+Effect+2",
+    rom: "xbox360/mass-effect-2.iso",
+  },
+  {
+    id: 108,
+    title: "Minecraft",
+    console: "Xbox 360",
+    genre: "Sandbox",
+    rating: 4.6,
+    image: "/placeholder.svg?height=200&width=300&text=Minecraft",
+    rom: "xbox360/minecraft.iso",
+  },
+  {
+    id: 109,
+    title: "Ori and the Blind Forest",
+    console: "Xbox 360",
+    genre: "Plataforma",
+    rating: 4.7,
+    image: "/placeholder.svg?height=200&width=300&text=Ori",
+    rom: "xbox360/ori-blind-forest.iso",
+  },
+  {
+    id: 110,
+    title: "Portal 2",
+    console: "Xbox 360",
+    genre: "Puzzle",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=Portal+2",
+    rom: "xbox360/portal-2.iso",
+  },
+  {
+    id: 111,
+    title: "Red Dead Redemption",
+    console: "Xbox 360",
+    genre: "Ação/Aventura",
     rating: 4.9,
-    image: "/placeholder.svg?height=200&width=300",
-    rom: "xbox360/rdr.iso",
+    image: "/placeholder.svg?height=200&width=300&text=RDR",
+    rom: "xbox360/red-dead-redemption.iso",
+  },
+  {
+    id: 112,
+    title: "The Elder Scrolls V: Skyrim",
+    console: "Xbox 360",
+    genre: "RPG",
+    rating: 4.8,
+    image: "/placeholder.svg?height=200&width=300&text=Skyrim",
+    rom: "xbox360/skyrim.iso",
   },
 ]
 
 const consoles = [
-  { name: "SNES", count: 8, icon: "🎮" },
-  { name: "N64", count: 6, icon: "🕹️" },
-  { name: "PS1", count: 6, icon: "💿" },
-  { name: "PS2", count: 5, icon: "📀" },
-  { name: "Xbox 360", count: 5, icon: "🎯" },
+  { name: "SNES", count: 23, icon: "🎮" },
+  { name: "N64", count: 23, icon: "🕹️" },
+  { name: "PS1", count: 25, icon: "💿" },
+  { name: "PS2", count: 19, icon: "📀" },
+  { name: "Xbox 360", count: 22, icon: "🎯" },
 ]
 
-export default function JSGamingHub() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [currentUser, setCurrentUser] = useState<any>(null)
-  const [selectedGame, setSelectedGame] = useState<any>(null)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedConsole, setSelectedConsole] = useState("all")
-  const [loginForm, setLoginForm] = useState({ email: "", password: "" })
-  const [loginError, setLoginError] = useState("")
-  const [isLoginOpen, setIsLoginOpen] = useState(false)
-
-  // Sistema de usuários
-  const users = [
-    {
-      email: "jadsonreserva98@gmail.com",
-      password: "admin2024",
-      name: "Jadson Silva",
-      role: "admin",
-      isOwner: true,
-    },
-    {
-      email: "admin@jsgaming.com",
-      password: "retro2024",
-      name: "Admin",
-      role: "admin",
-    },
-    {
-      email: "gamer@jsgaming.com",
-      password: "cloud123",
-      name: "Gamer",
-      role: "user",
-    },
-    {
-      email: "player@jsgaming.com",
-      password: "games456",
-      name: "Player",
-      role: "user",
-    },
-  ]
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
-    const user = users.find((u) => u.email === loginForm.email && u.password === loginForm.password)
-
-    if (user) {
-      setCurrentUser(user)
-      setIsLoggedIn(true)
-      setIsLoginOpen(false)
-      setLoginError("")
-      setLoginForm({ email: "", password: "" })
-    } else {
-      setLoginError("Email ou senha incorretos")
-    }
-  }
-
-  const handleLogout = () => {
-    setIsLoggedIn(false)
-    setCurrentUser(null)
-    setSelectedGame(null)
-  }
-
-  const filteredGames = featuredGames.filter((game) => {
-    const matchesSearch =
-      game.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      game.genre.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesConsole = selectedConsole === "all" || game.console === selectedConsole
-    return matchesSearch && matchesConsole
-  })
-
-  if (!isLoggedIn) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-              <Gamepad2 className="w-8 h-8 text-white" />
-            </div>
-            <CardTitle className="text-2xl font-bold">J.S Gaming Hub</CardTitle>
-            <CardDescription>Servidor de Jogos Retrô - Acesse sua biblioteca de jogos clássicos</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="seu@email.com"
-                  value={loginForm.email}
-                  onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Senha</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={loginForm.password}
-                  onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
-                  required
-                />
-              </div>
-              {loginError && (
-                <Alert className="border-red-200 bg-red-50">
-                  <AlertDescription className="text-red-800">{loginError}</AlertDescription>
-                </Alert>
-              )}
-              <Button type="submit" className="w-full">
-                Entrar no Gaming Hub
-              </Button>
-            </form>
-
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-              <p className="text-sm text-gray-600 mb-2">Credenciais de teste:</p>
-              <div className="text-xs space-y-1">
-                <p>
-                  <strong>Admin:</strong> jadsonreserva98@gmail.com / admin2024
-                </p>
-                <p>
-                  <strong>Usuário:</strong> gamer@jsgaming.com / cloud123
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-
-  if (selectedGame) {
-    return <GamePlayer game={selectedGame} onBack={() => setSelectedGame(null)} user={currentUser} />
-  }
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
-      {/* Header */}
-      <header className="bg-black/20 backdrop-blur-sm border-b border-white/10">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <Gamepad2 className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-white">J.S Gaming Hub</h1>
-              <p className="text-sm text-gray-300">Servidor de Jogos Retrô</p>
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-4">
-            <CloudServerStatus />
-            <div className="flex items-center space-x-2 text-white">
-              <User className="w-4 h-4" />
-              <span className="text-sm">{currentUser?.name}</span>
-              {currentUser?.isOwner && (
-                <Badge variant="secondary" className="text-xs">
-                  Owner
-                </Badge>
-              )}
-              {currentUser?.role === "admin" && !currentUser?.isOwner && (
-                <Badge variant="outline" className="text-xs">
-                  Admin
-                </Badge>
-              )}
-            </div>
-            <Button variant="ghost" size="sm" onClick={handleLogout}>
-              <LogOut className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-      </header>
-
-      <div className="container mx-auto px-4 py-8">
-        <Tabs defaultValue="games" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="games">Jogos</TabsTrigger>
-            <TabsTrigger value="devices">Dispositivos</TabsTrigger>
-            <TabsTrigger value="install">Instalação</TabsTrigger>
-            <TabsTrigger value="settings">Configurações</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="games" className="space-y-6">
-            {/* Busca e Filtros */}
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <Input
-                  placeholder="Buscar jogos..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <select
-                value={selectedConsole}
-                onChange={(e) => setSelectedConsole(e.target.value)}
-                className="px-3 py-2 border rounded-md bg-background"
-              >
-                <option value="all">Todos os Consoles</option>
-                {consoles.map((console) => (
-                  <option key={console.name} value={console.name}>
-                    {console.name} ({console.count})
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Estatísticas dos Consoles */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {consoles.map((console) => (
-                <Card key={console.name} className="text-center">
-                  <CardContent className="p-4">
-                    <div className="text-2xl mb-2">{console.icon}</div>
-                    <h3 className="font-semibold">{console.name}</h3>
-                    <p className="text-sm text-gray-600">{console.count} jogos</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            {/* Grid de Jogos */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredGames.map((game) => (
-                <Card key={game.id} className="group hover:shadow-lg transition-shadow cursor-pointer">
-                  <div className="relative overflow-hidden rounded-t-lg">
-                    <img
-                      src={game.image || "/placeholder.svg"}
-                      alt={game.title}
-                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform"
-                    />
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <Button
-                        onClick={() => setSelectedGame(game)}
-                        className="bg-white/20 backdrop-blur-sm hover:bg-white/30"
-                      >
-                        <Play className="w-4 h-4 mr-2" />
-                        Jogar
-                      </Button>
-                    </div>
-                  </div>
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-semibold text-sm leading-tight">{game.title}</h3>
-                      <Badge variant="secondary" className="text-xs ml-2">
-                        {game.console}
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-2">{game.genre}</p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                        <span className="text-sm ml-1">{game.rating}</span>
-                      </div>
-                      <Button size="sm" variant="ghost" onClick={() => setSelectedGame(game)}>
-                        <Play className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="devices">
-            <DeviceCompatibility />
-          </TabsContent>
-
-          <TabsContent value="install">
-            <InstallationGuide />
-          </TabsContent>
-
-          <TabsContent value="settings">
-            <Card>
-              <CardHeader>
-                <CardTitle>Configurações do Sistema</CardTitle>
-                <CardDescription>Gerencie as configurações do seu gaming hub</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Card>
-                    <CardContent className="p-4 text-center">
-                      <Wifi className="w-8 h-8 mx-auto mb-2 text-green-500" />
-                      <h3 className="font-semibold">Controles Wireless</h3>
-                      <p className="text-sm text-gray-600">Conectados: 2</p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="p-4 text-center">
-                      <Bluetooth className="w-8 h-8 mx-auto mb-2 text-blue-500" />
-                      <h3 className="font-semibold">Bluetooth</h3>
-                      <p className="text-sm text-gray-600">Ativo</p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="p-4 text-center">
-                      <Usb className="w-8 h-8 mx-auto mb-2 text-purple-500" />
-                      <h3 className="font-semibold">USB</h3>
-                      <p className="text-sm text-gray-600">3 portas ativas</p>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {currentUser?.role === "admin" && (
-                  <div className="border-t pt-6">
-                    <h3 className="text-lg font-semibold mb-4">Configurações de Administrador</h3>
-                    <div className="space-y-4">
-                      <Button variant="outline" className="w-full justify-start bg-transparent">
-                        <Settings className="w-4 h-4 mr-2" />
-                        Gerenciar Usuários
-                      </Button>
-                      <Button variant="outline" className="w-full justify-start bg-transparent">
-                        <Download className="w-4 h-4 mr-2" />
-                        Adicionar ROMs
-                      </Button>
-                      <Button variant="outline" className="w-full justify-start bg-transparent">
-                        <Monitor className="w-4 h-4 mr-2" />
-                        Configurar Servidor
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
-    </div>
-  )
+export default function Page() {
+  // Page component code here
 }
