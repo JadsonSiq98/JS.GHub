@@ -1,0 +1,5 @@
+npm install
+npx --yes shadcn@latest add "https://v0.app/chat/b/b_ywRIiJTP0hm?token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0.._9A4TSrxKpIiXtMj.fZM4LFqEQTqYK8KMpqSYYeEFBA3Hydxr2-Aor1NqA_lmqBE9zn3dEdl96us.j4xKqmOoOYILt8puOa4F0A"
+git add .
+git commit -m "feat: adiciona componente V0 via ShadCN"
+git push origin main
