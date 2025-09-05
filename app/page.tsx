@@ -1,5 +1,26 @@
 "use client"
 
+import { useState, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Search, Star, Play, Users, Gamepad2, Trophy, Crown, Zap } from "lucide-react"
+import GamePlayer from "@/components/game-player"
+import DeviceCompatibility from "@/components/device-compatibility"
+import InstallationGuide from "@/components/installation-guide"
+import CloudServerStatus from "@/components/cloud-server-status"
+
 const featuredGames = [
   // SNES Games (20 jogos)
   {
@@ -714,7 +735,7 @@ const featuredGames = [
     id: 79,
     title: "Grand Theft Auto: San Andreas",
     console: "PS2",
-    genre: "Ação",
+    genre: "Ação/Aventura",
     rating: 4.8,
     image: "/placeholder.svg?height=200&width=300&text=GTA+SA",
     rom: "https://archive.org/download/chd_ps2/Grand%20Theft%20Auto%20-%20San%20Andreas%20%28USA%29.chd",
@@ -1029,5 +1050,258 @@ const consoles = [
 ]
 
 export default function Page() {
-  // Page component code here
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [currentUser, setCurrentUser] = useState<any>(null)
+  const [selectedGame, setSelectedGame] = useState<any>(null)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedConsole, setSelectedConsole] = useState("Todos")
+  const [loginForm, setLoginForm] = useState({ email: "", password: "" })
+  const [onlineUsers, setOnlineUsers] = useState(0)
+
+  useEffect(() => {
+    // Simulate fetching online users
+    setOnlineUsers(Math.floor(Math.random() * 100))
+  }, [])
+
+  const handleLogin = () => {
+    // Simulate login
+    if (loginForm.email === "admin@jsgaming.com" && loginForm.password === "retro2024") {
+      setIsLoggedIn(true)
+      setCurrentUser({ name: "Admin", isAdmin: true })
+    } else {
+      alert("Credenciais inválidas")
+    }
+  }
+
+  const filteredGames = featuredGames.filter((game) => {
+    if (selectedConsole !== "Todos" && game.console !== selectedConsole) return false
+    if (!game.title.toLowerCase().includes(searchTerm.toLowerCase())) return false
+    return true
+  })
+
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center p-4">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,215,0,0.1),transparent_50%)]" />
+
+        <Card className="w-full max-w-md bg-black/80 border-2 border-yellow-500/30 backdrop-blur-xl shadow-2xl shadow-yellow-500/20">
+          <CardHeader className="text-center space-y-4">
+            <div className="flex justify-center">
+              <img
+                src="/js-gaming-hub-logo.png"
+                alt="J.S Gaming Hub"
+                className="w-24 h-24 rounded-2xl shadow-lg shadow-yellow-500/30"
+              />
+            </div>
+            <div>
+              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent">
+                J.S Gaming Hub
+              </CardTitle>
+              <CardDescription className="text-gray-300 mt-2">Servidor Premium de Jogos Retrô</CardDescription>
+            </div>
+          </CardHeader>
+
+          <CardContent className="space-y-6">
+            <div className="space-y-4">
+              <Input
+                type="email"
+                placeholder="Email"
+                value={loginForm.email}
+                onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
+                className="bg-gray-900/50 border-yellow-500/30 text-white placeholder:text-gray-400 focus:border-yellow-500"
+              />
+              <Input
+                type="password"
+                placeholder="Senha"
+                value={loginForm.password}
+                onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+                className="bg-gray-900/50 border-yellow-500/30 text-white placeholder:text-gray-400 focus:border-yellow-500"
+              />
+              <Button
+                onClick={handleLogin}
+                className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-bold shadow-lg shadow-yellow-500/30"
+              >
+                <Crown className="w-4 h-4 mr-2" />
+                Entrar no Gaming Hub
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 pt-4 border-t border-yellow-500/20">
+              <div className="text-center p-3 rounded-lg bg-gradient-to-br from-yellow-500/10 to-transparent border border-yellow-500/20">
+                <Gamepad2 className="w-6 h-6 text-yellow-500 mx-auto mb-1" />
+                <p className="text-xs text-gray-300">112+ Jogos</p>
+              </div>
+              <div className="text-center p-3 rounded-lg bg-gradient-to-br from-yellow-500/10 to-transparent border border-yellow-500/20">
+                <Zap className="w-6 h-6 text-yellow-500 mx-auto mb-1" />
+                <p className="text-xs text-gray-300">Sem Lag</p>
+              </div>
+              <div className="text-center p-3 rounded-lg bg-gradient-to-br from-yellow-500/10 to-transparent border border-yellow-500/20">
+                <Trophy className="w-6 h-6 text-yellow-500 mx-auto mb-1" />
+                <p className="text-xs text-gray-300">HD Quality</p>
+              </div>
+              <div className="text-center p-3 rounded-lg bg-gradient-to-br from-yellow-500/10 to-transparent border border-yellow-500/20">
+                <Users className="w-6 h-6 text-yellow-500 mx-auto mb-1" />
+                <p className="text-xs text-gray-300">Multiplayer</p>
+              </div>
+            </div>
+
+            <div className="text-center text-xs text-gray-400">
+              Credenciais de teste: admin@jsgaming.com / retro2024
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,215,0,0.1),transparent_50%)] pointer-events-none" />
+
+      {/* Header */}
+      <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-b border-yellow-500/30">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <img
+                src="/js-gaming-hub-logo.png"
+                alt="J.S Gaming Hub"
+                className="w-12 h-12 rounded-xl shadow-lg shadow-yellow-500/30"
+              />
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
+                  J.S Gaming Hub
+                </h1>
+                <p className="text-sm text-gray-400">Servidor Premium</p>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-4">
+              <Badge variant="outline" className="border-yellow-500/50 text-yellow-400">
+                <Users className="w-3 h-3 mr-1" />
+                {onlineUsers} Online
+              </Badge>
+
+              <div className="flex items-center space-x-2">
+                <Avatar className="w-8 h-8 border-2 border-yellow-500/50">
+                  <AvatarImage src="/js-gaming-hub-logo.png" />
+                  <AvatarFallback className="bg-yellow-500 text-black font-bold">
+                    {currentUser?.isAdmin ? "👑" : "🎮"}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="text-sm">
+                  <p className="font-medium text-yellow-400">{currentUser?.name}</p>
+                  <p className="text-xs text-gray-400">{currentUser?.isAdmin ? "Administrador" : "Jogador"}</p>
+                </div>
+              </div>
+
+              <Button
+                onClick={() => setIsLoggedIn(false)}
+                variant="outline"
+                className="border-yellow-500/50 text-yellow-400 hover:bg-yellow-500/10"
+              >
+                Sair
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-8">
+        {/* Search and Filters */}
+        <div className="mb-8 space-y-4">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+                placeholder="Buscar jogos..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 bg-gray-900/50 border-yellow-500/30 text-white placeholder:text-gray-400 focus:border-yellow-500"
+              />
+            </div>
+
+            <Tabs value={selectedConsole} onValueChange={setSelectedConsole} className="w-full md:w-auto">
+              <TabsList className="bg-gray-900/50 border border-yellow-500/30">
+                <TabsTrigger value="Todos" className="data-[state=active]:bg-yellow-500 data-[state=active]:text-black">
+                  Todos
+                </TabsTrigger>
+                {consoles.map((console) => (
+                  <TabsTrigger
+                    key={console.name}
+                    value={console.name}
+                    className="data-[state=active]:bg-yellow-500 data-[state=active]:text-black"
+                  >
+                    {console.icon} {console.name}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+          </div>
+        </div>
+
+        {/* Games Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+          {filteredGames.map((game) => (
+            <Card
+              key={game.id}
+              className="bg-gray-900/50 border-yellow-500/20 hover:border-yellow-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-yellow-500/20 group"
+            >
+              <CardHeader className="p-0">
+                <div className="relative overflow-hidden rounded-t-lg">
+                  <img
+                    src={game.image || "/placeholder.svg"}
+                    alt={game.title}
+                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <Badge className="absolute top-2 right-2 bg-yellow-500 text-black font-bold">{game.console}</Badge>
+                  <div className="absolute bottom-2 left-2 flex items-center space-x-1">
+                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                    <span className="text-sm font-medium text-white">{game.rating}</span>
+                  </div>
+                </div>
+              </CardHeader>
+
+              <CardContent className="p-4">
+                <CardTitle className="text-lg mb-2 text-white group-hover:text-yellow-400 transition-colors">
+                  {game.title}
+                </CardTitle>
+                <CardDescription className="text-gray-400 mb-4">{game.genre}</CardDescription>
+
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-bold shadow-lg shadow-yellow-500/20"
+                      onClick={() => setSelectedGame(game)}
+                    >
+                      <Play className="w-4 h-4 mr-2" />
+                      Jogar Agora
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-4xl bg-black border-yellow-500/30">
+                    <DialogHeader>
+                      <DialogTitle className="text-yellow-400">{game.title}</DialogTitle>
+                      <DialogDescription className="text-gray-300">
+                        {game.console} • {game.genre}
+                      </DialogDescription>
+                    </DialogHeader>
+                    {selectedGame && <GamePlayer game={selectedGame} />}
+                  </DialogContent>
+                </Dialog>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Additional Components */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <CloudServerStatus />
+          <DeviceCompatibility />
+          <InstallationGuide />
+        </div>
+      </main>
+    </div>
+  )
 }
